@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "cyber-radio": {
+      "command": "node",
+      "args": [
+        "D:\\Python\\cyberradio\\mcp-server\\server.js"
+      ],
+      "cwd": "D:\\Python\\cyberradio",
+      "env": {
+        "CYBERRADIO_BRIDGE": "1",
+        "PWA_PORT": "5050"
+      }
+    }
+  }
+}

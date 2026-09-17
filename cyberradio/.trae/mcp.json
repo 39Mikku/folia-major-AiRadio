@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "cyber-radio": {
+      "command": "node",
+      "args": ["./mcp-server/server.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
