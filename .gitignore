@@ -26,7 +26,14 @@ dist-ssr
 *.sw?
 
 .vercel
+.env
+.env.*
+!.env.example
 .env*.local
+*~
+*.bak
+*.orig
+.trae/
 
 dev-dist/
 example/

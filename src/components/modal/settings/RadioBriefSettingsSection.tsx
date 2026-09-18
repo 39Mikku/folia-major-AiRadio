@@ -19,6 +19,7 @@ import { useRadioBriefRuntimeStore } from '../../../stores/useRadioBriefRuntimeS
 import { setStatusMessage } from '../../../stores/useStatusMessageStore';
 import { SettingsAnchor } from './navigation/SettingsAnchorContext';
 import SettingsSectionHeading from './navigation/SettingsSectionHeading';
+import RadioBriefPromptEditor from './RadioBriefPromptEditor';
 
 // src/components/modal/settings/RadioBriefSettingsSection.tsx
 // Playback-page controls for radio briefs: master switch, prefetch window, MiniMax/Tavily keys.
@@ -373,6 +374,8 @@ const RadioBriefSettingsSection: React.FC<RadioBriefSettingsSectionProps> = ({
                     </div>
                     {renderToggle(developerMode, () => setDeveloperMode(!developerMode))}
                 </div>
+
+                <RadioBriefPromptEditor />
             </div>
         </SettingsAnchor>
     );

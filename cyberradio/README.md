@@ -18,8 +18,8 @@ MCP 客户端配置示例（请把路径改成实际绝对路径）：
   "mcpServers": {
     "cyber-radio": {
       "command": "node",
-      "args": ["D:\\Python\\cyberradio\\mcp-server\\server.js"],
-      "cwd": "D:\\Python\\cyberradio"
+      "args": ["./mcp-server/server.js"],
+      "cwd": "."
     }
   }
 }

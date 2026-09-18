@@ -29,24 +29,25 @@ export const gatherRadioBriefMaterials = async (
     debugRunId: string | null = null,
 ): Promise<RadioBriefMaterials> => {
     onStep?.('lyrics');
-    const lyrics = await onceRetry(async () => {
-        const result = await omni.getLyrics(song);
-        const text = lyricTextForBrief(result.lyrics);
-        if (!text) {
-            throw new Error('lyrics empty after credit-block filter');
-        }
-        return text;
-    });
-    await dumpRadioBriefStep(debugRunId, '01-lyrics.json', { lyrics });
+    let lyrics = '';
+    try {
+        lyrics = await onceRetry(async () => {
+            const result = await omni.getLyrics(song);
+            return lyricTextForBrief(result.lyrics);
+        });
+    } catch {
+        lyrics = '';
+    }
+    const instrumental = Boolean(song.isPureMusic) || !lyrics;
+    await dumpRadioBriefStep(debugRunId, '01-lyrics.json', { lyrics, instrumental });
 
     onStep?.('comments');
-    const comments = await onceRetry(async () => {
-        const picked = await omni.getHotComments(song, RADIO_HOT_COMMENT_COUNT);
-        if (picked.length === 0) {
-            throw new Error('no cleaned hot comments');
-        }
-        return picked;
-    });
+    let comments: RadioBriefMaterials['comments'] = [];
+    try {
+        comments = await onceRetry(async () => omni.getHotComments(song, RADIO_HOT_COMMENT_COUNT));
+    } catch {
+        comments = [];
+    }
     await dumpRadioBriefStep(debugRunId, '02-comments.json', { comments });
 
     onStep?.('web');
@@ -66,6 +67,7 @@ export const gatherRadioBriefMaterials = async (
         artist: artistLine(song),
         album: song.album?.name ?? '',
         lyricsText: lyrics,
+        instrumental,
         comments,
         webAnswer: web.answer,
         webHits: web.results,

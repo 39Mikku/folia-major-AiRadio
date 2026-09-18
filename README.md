@@ -9,6 +9,8 @@
 
 Lyrics Reimagined // 辞曲新境
 
+> **实验性 fork（AiRadio）**：在 Folia 0.7.7 桌面端接入节目口播。未做全量验证，不是上游正式版。说明见 [docs/FORK.md](docs/FORK.md) 与 [docs/radio-brief.md](docs/radio-brief.md)。安装包可覆盖现有 0.7.7 桌面版。
+
 [![GitHub release](https://img.shields.io/github/v/release/chthollyphile/folia-major?label=release)](https://github.com/chthollyphile/folia-major/releases)
 [![License](https://img.shields.io/github/license/chthollyphile/folia-major)](https://github.com/chthollyphile/folia-major/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/chthollyphile/folia-major?style=social)](https://github.com/chthollyphile/folia-major/stargazers)

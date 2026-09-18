@@ -20,6 +20,7 @@ export interface RadioBriefMaterials {
     artist: string;
     album: string;
     lyricsText: string;
+    instrumental: boolean;
     comments: RadioHotComment[];
     webAnswer: string;
     webHits: RadioWebHit[];

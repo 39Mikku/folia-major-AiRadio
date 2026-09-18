@@ -1,4 +1,5 @@
 import { useRadioBriefSettingsStore } from '../../stores/useRadioBriefSettingsStore';
+import { DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT } from './briefPrompt';
 import { getPlaybackSongKey } from '../../utils/appPlaybackGuards';
 import type { SongResult } from '../../types';
 
@@ -31,5 +32,6 @@ export const hamsterParamsSnapshot = () => {
         unduckRampMs: mix.unduckRampMs,
         voiceLevel: mix.voiceLevel,
         developerMode: mix.developerMode,
+        customSystemPrompt: mix.systemPrompt.trim() !== DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT,
     };
 };

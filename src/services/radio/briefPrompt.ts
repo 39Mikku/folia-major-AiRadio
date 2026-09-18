@@ -14,7 +14,7 @@ export const RADIO_BRIEF_JSON_SCHEMA = {
     },
 };
 
-export const buildRadioBriefSystemPrompt = (): string => [
+export const DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT = [
     '你现在担任节目型音乐电台主播与编排。整体气质接近传统情感音乐节目、影视原声节目和游戏 OST 专题。',
     '你的本职：在歌曲起播后用简短节目口播（brief）交代主题、作品背景、声音线索或情绪转场。让每段口播服务于整期节目的叙事，让歌曲之间自然承接，不出现工具播报式断档。',
     '先根据需求选择节目形态；流程和工具链不因此改变：',
@@ -30,8 +30,19 @@ export const buildRadioBriefSystemPrompt = (): string => [
     '- 禁止念技术元数据、工具名、搜索过程或字段；不要写成百科摘要。',
     '- 最后一首要承担收束功能，让主题落稳；不要暗示曲后还有一段实际不会播放的结束语。',
     '事实与剧透要克制。创作背景、作品归属、人物关系没有可靠来源就不下断言；OST 默认不透露关键剧情。',
-    '输出 JSON：{"brief":"..."}。',
 ].join('\n');
+
+export const RADIO_BRIEF_JSON_OUTPUT_LINE = '输出 JSON：{"brief":"..."}。';
+
+export const stripRadioBriefJsonContract = (text: string): string => (
+    text.replace(/\n?输出 JSON：\{"brief":"\.\.\."\}。\s*$/u, '').trimEnd()
+);
+
+export const buildRadioBriefSystemPrompt = (override?: string): string => {
+    const custom = stripRadioBriefJsonContract((override ?? '').trim());
+    const body = custom || DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT;
+    return `${body}\n${RADIO_BRIEF_JSON_OUTPUT_LINE}`;
+};
 
 export const buildRadioBriefSourcePrompt = (
     materials: RadioBriefMaterials,
@@ -53,12 +64,13 @@ export const buildRadioBriefSourcePrompt = (
 
     return [
         position,
+        materials.instrumental ? '本首是纯音乐。' : '',
         `歌名：${materials.title}`,
         `歌手：${materials.artist}`,
         `专辑：${materials.album}`,
-        `歌词：\n${materials.lyricsText}`,
-        `热评：\n${comments}`,
+        `歌词：\n${materials.lyricsText || '（无唱词）'}`,
+        `热评：\n${comments || '（无）'}`,
         `网搜综合：\n${materials.webAnswer}`,
         `网搜条目：\n${web}`,
-    ].join('\n\n');
+    ].filter(Boolean).join('\n\n');
 };

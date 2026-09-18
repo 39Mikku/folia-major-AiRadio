@@ -13,7 +13,8 @@ import {
     RADIO_VOICE_LEVEL_MIN,
 } from '../types/radioBrief';
 import { clampRadioPrefetchCount } from '../services/radio/prefetchWindow';
-import { getStoredBoolean, setStoredBoolean } from './storagePrimitives';
+import { DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT, stripRadioBriefJsonContract } from '../services/radio/briefPrompt';
+import { getStoredBoolean, getStoredString, setStoredBoolean, setStoredString } from './storagePrimitives';
 import { setStatusMessage } from './useStatusMessageStore';
 import i18n from '../i18n/config';
 
@@ -29,6 +30,7 @@ export const RADIO_BRIEF_DUCK_RAMP_MS_KEY = 'folia_radio_brief_duck_ramp_ms';
 export const RADIO_BRIEF_UNDUCK_RAMP_MS_KEY = 'folia_radio_brief_unduck_ramp_ms';
 export const RADIO_BRIEF_VOICE_LEVEL_KEY = 'folia_radio_brief_voice_level';
 export const RADIO_BRIEF_DEVELOPER_MODE_KEY = 'folia_radio_brief_developer_mode';
+export const RADIO_BRIEF_SYSTEM_PROMPT_KEY = 'folia_radio_brief_system_prompt';
 
 const clampDuckLevel = (value: number): number => (
     Math.min(RADIO_DUCK_LEVEL_MAX, Math.max(RADIO_DUCK_LEVEL_MIN, value))
@@ -65,6 +67,7 @@ type RadioBriefSettingsState = {
     unduckRampMs: number;
     voiceLevel: number;
     developerMode: boolean;
+    systemPrompt: string;
     setEnabled: (enabled: boolean) => void;
     setPrefetchEnabled: (enabled: boolean) => void;
     setPrefetchCount: (count: number) => void;
@@ -73,6 +76,8 @@ type RadioBriefSettingsState = {
     setUnduckRampMs: (ms: number) => void;
     setVoiceLevel: (level: number) => void;
     setDeveloperMode: (enabled: boolean) => void;
+    setSystemPrompt: (prompt: string) => void;
+    resetSystemPrompt: () => void;
 };
 
 export const useRadioBriefSettingsStore = create<RadioBriefSettingsState>(set => ({
@@ -84,6 +89,9 @@ export const useRadioBriefSettingsStore = create<RadioBriefSettingsState>(set =>
     unduckRampMs: readStoredNumber(RADIO_BRIEF_UNDUCK_RAMP_MS_KEY, RADIO_UNDUCK_RAMP_MS, clampRampMs),
     voiceLevel: readStoredNumber(RADIO_BRIEF_VOICE_LEVEL_KEY, RADIO_VOICE_LEVEL, clampVoiceLevel),
     developerMode: getStoredBoolean(RADIO_BRIEF_DEVELOPER_MODE_KEY, false),
+    systemPrompt: stripRadioBriefJsonContract(
+        getStoredString(RADIO_BRIEF_SYSTEM_PROMPT_KEY, DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT),
+    ) || DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT,
     setEnabled: enabled => {
         setStoredBoolean(RADIO_BRIEF_ENABLED_KEY, enabled);
         set({ enabled });
@@ -130,5 +138,14 @@ export const useRadioBriefSettingsStore = create<RadioBriefSettingsState>(set =>
     setDeveloperMode: developerMode => {
         setStoredBoolean(RADIO_BRIEF_DEVELOPER_MODE_KEY, developerMode);
         set({ developerMode });
+    },
+    setSystemPrompt: prompt => {
+        const systemPrompt = stripRadioBriefJsonContract(prompt);
+        setStoredString(RADIO_BRIEF_SYSTEM_PROMPT_KEY, systemPrompt);
+        set({ systemPrompt });
+    },
+    resetSystemPrompt: () => {
+        setStoredString(RADIO_BRIEF_SYSTEM_PROMPT_KEY, DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT);
+        set({ systemPrompt: DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT });
     },
 }));

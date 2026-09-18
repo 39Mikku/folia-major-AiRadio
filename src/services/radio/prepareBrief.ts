@@ -7,6 +7,7 @@ import { buildRadioBriefSourcePrompt, buildRadioBriefSystemPrompt } from './brie
 import { radioSynthesizeSpeech, radioWriteBrief } from './radioIpc';
 import { createRadioBriefDebugRunId, dumpRadioBriefStep, hamsterParamsSnapshot } from './radioBriefDebug';
 import { savePersistedRadioBrief } from './radioBriefPersist';
+import { useRadioBriefSettingsStore } from '../../stores/useRadioBriefSettingsStore';
 
 // src/services/radio/prepareBrief.ts
 // One song: four-piece materials → brief JSON → MiniMax buffer, decoded on the playback context.
@@ -52,7 +53,9 @@ export const prepareRadioBrief = (
         });
 
         const materials = await gatherRadioBriefMaterials(song, onStep, debugRunId);
-        const systemPrompt = buildRadioBriefSystemPrompt();
+        const systemPrompt = buildRadioBriefSystemPrompt(
+            useRadioBriefSettingsStore.getState().systemPrompt,
+        );
         const sourcePrompt = buildRadioBriefSourcePrompt(materials, previousBrief);
         onStep?.('writing');
         await dumpRadioBriefStep(debugRunId, '04-write-request.json', { systemPrompt, sourcePrompt });

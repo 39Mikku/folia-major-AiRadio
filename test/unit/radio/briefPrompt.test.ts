@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRadioBriefSourcePrompt, buildRadioBriefSystemPrompt } from '@/services/radio/briefPrompt';
+import { buildRadioBriefSourcePrompt, buildRadioBriefSystemPrompt, DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT } from '@/services/radio/briefPrompt';
 import type { RadioBriefMaterials } from '@/types/radioBrief';
 
 // test/unit/radio/briefPrompt.test.ts
@@ -11,6 +11,7 @@ const materials: RadioBriefMaterials = {
     album: '十一月的萧邦',
     lyricsText: '一群嗜血的蚂蚁被腐肉所吸引',
     comments: [{ content: '那年夏天我在地铁里第一次听到这首歌，窗外的雨一直在下个不停，我想起宿舍', likes: 10 }],
+    instrumental: false,
     webAnswer: '周杰伦为电影《头文字D》创作了夜曲。',
     webHits: [{ title: '创作背景', content: '为电影《头文字D》创作。' }],
 };
@@ -22,6 +23,7 @@ describe('radio brief prompt', () => {
         expect(system).toContain('不要每段都套用“刚才听到的是……接下来是……”');
         expect(system).toContain('禁止念技术元数据、工具名、搜索过程或字段');
         expect(system).toContain('80-150 字');
+        expect(system).toContain('输出 JSON：{"brief":"..."}。');
         expect(system).not.toContain('禁止每段都报歌名');
         expect(system).not.toContain('不合格');
     });
@@ -36,5 +38,23 @@ describe('radio brief prompt', () => {
         expect(source).not.toContain('https://example.com');
         expect(source).not.toContain('禁止照念');
         expect(source).not.toContain('报幕腔');
+    });
+
+    it('marks instrumentals instead of requiring sung lyrics', () => {
+        const source = buildRadioBriefSourcePrompt({
+            ...materials,
+            lyricsText: '',
+            instrumental: true,
+            comments: [],
+        }, null);
+        expect(source).toContain('本首是纯音乐。');
+        expect(source).toContain('（无唱词）');
+    });
+
+    it('appends the JSON contract behind the editable prompt', () => {
+        expect(DEFAULT_RADIO_BRIEF_SYSTEM_PROMPT).not.toContain('输出 JSON');
+        expect(buildRadioBriefSystemPrompt('只写一句口播。')).toBe('只写一句口播。\n输出 JSON：{"brief":"..."}。');
+        expect(buildRadioBriefSystemPrompt('  ')).toContain('节目型音乐电台主播');
+        expect(buildRadioBriefSystemPrompt('  ')).toMatch(/输出 JSON：\{"brief":"\.\.\."\}。$/);
     });
 });
