@@ -8,8 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-cyberradio/node_modules
-cyberradio/user-data
 dist
 dist-ssr
 *.local
@@ -80,9 +78,12 @@ ffmpeg-8.1.2/
 original/
 # Local upstream implementation references used during investigation; never ship.
 reference/
+# Original CyberRadio MCP and other local analysis/reference trees; never ship.
+cyberradio/
 # Optional developer override for FFmpeg; packaged builds fetch their pinned runtime.
 # Local hand-made zip bundles of mods (drag-drop install test files); never ship.
 mods/*.zip
+*.svg.bak
 
 
 # Built by packaging/windows/build-wallpaper-helper.mjs (Windows wallpaper mode helper).

@@ -53,7 +53,8 @@ Tavily 相关度分数 `score` 目前不进模型。
 | `src/services/playbackGraph.ts` | mix 后挂 `musicDuck`，音量前挂 `voiceGain` |
 | `src/components/modal/settings/RadioBriefSettingsSection.tsx` | 设置页 |
 | `src/components/panelTab/controls/RadioBriefActionRow.tsx` | 右侧面板开关 |
-| `cyberradio/SKILL.md` | 口播文案原规则 |
+
+口播文案默认稿来自本地参考用的 CyberRadio 技能原文，该目录不进本仓库。
 
 热评目前只有网易云 adapter 实现。酷狗/QQ 没有评论能力时该首不开口播。
 
